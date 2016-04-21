@@ -2,6 +2,7 @@
 
 import smbus
 import math
+import time
 
 # Power management registers
 power_mgmt_1 = 0x6b
@@ -34,15 +35,17 @@ def get_x_rotation(x,y,z):
     radians = math.atan2(y, dist(x,z))
     return math.degrees(radians)
 
-bus = smbus.SMBus(0) # or bus = smbus.SMBus(1) for Revision 2 boards
+bus = smbus.SMBus(1) # or bus = smbus.SMBus(1) for Revision 2 boards
 address = 0x68       # This is the address value read via the i2cdetect command
 
 # Now wake the 6050 up as it starts in sleep mode
 bus.write_byte_data(address, power_mgmt_1, 0)
 f = open('data.csv', 'w')
+cur_time = time.time()
 #print "gyro data"
 #print "---------"
 while(1):
+    cur_time = time.time()
     gyro_xout = read_word_2c(0x43)
     gyro_yout = read_word_2c(0x45)
     gyro_zout = read_word_2c(0x47)
@@ -55,15 +58,19 @@ while(1):
     accel_yout_scaled = accel_yout / 16384.0
     accel_zout_scaled = accel_zout / 16384.0
 
-    f.write(gyro_xout / 131)
+
+    f.write(str(int(round(cur_time*1000))))
     f.write(",")
-    f.write(gyro_yout / 131)
+    f.write(str(gyro_xout / 131))
     f.write(",")
-    f.write(gyro_zout / 131)
+    f.write(str(gyro_yout / 131))
     f.write(",")
-    f.write(accel_xout_scaled)
+    f.write(str(gyro_zout / 131))
     f.write(",")
-    f.write(accel_yout_scaled)
+    f.write(str(accel_xout_scaled))
     f.write(",")
-    f.write(accel_zout_scaled)
+    f.write(str(accel_yout_scaled))
+    f.write(",")
+    f.write(str(accel_zout_scaled))
+    f.write('\n')
 
