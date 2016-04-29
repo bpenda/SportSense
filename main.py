@@ -8,11 +8,12 @@ Copyright 2015 MrTijn/Tijndagamer
 from MPU6050 import MPU6050
 from time import sleep
 
-set_accel_range(self, ACCEL_RANGE_16G)
 # Create a new instance of the MPU6050 class
 sensor = MPU6050(0x68)
 
 bus.write_byte_data(address, power_mgmt_1, 0)
+
+set_accel_range(self, MPU6050.ACCEL_RANGE_16G)
 
 f = open('data.csv', 'w')
 cur_time = time.time()
