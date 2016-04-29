@@ -21,14 +21,6 @@ while True:
     gyro_data = sensor.get_gyro_data()
     cur_time = time.time()
 
-
-    print(str(accel_data['x']))
-    print(",")
-    print(str(accel_data['y']))
-    print(",")
-    print(str(accel_data['z']))
-    print("\n")
-
     f.write(str(int(round(cur_time*1000))))
     f.write(",")
     f.write(str(gyro_data['x'] / 131))
@@ -37,9 +29,9 @@ while True:
     f.write(",")
     f.write(str(gyro_data['z'] / 131))
     f.write(",")
-    f.write(str(accel_data['x']))
+    f.write(str(accel_data['x']/sensor.ACCEL_SCALE_MODIFIER_16G))
     f.write(",")
-    f.write(str(accel_data['y']))
+    f.write(str(accel_data['y']/sensor.ACCEL_SCALE_MODIFIER_16G))
     f.write(",")
-    f.write(str(accel_data['z']))
+    f.write(str(accel_data['z']/sensor.ACCEL_SCALE_MODIFIER_16G))
     f.write('\n')
