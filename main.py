@@ -11,7 +11,7 @@ from time import sleep
 # Create a new instance of the MPU6050 class
 sensor = MPU6050(0x68)
 
-sensor.set_accel_range(self, sensor.ACCEL_RANGE_16G)
+sensor.set_accel_range(sensor.ACCEL_RANGE_16G)
 
 f = open('data.csv', 'w')
 cur_time = time.time()
