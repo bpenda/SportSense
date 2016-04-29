@@ -6,7 +6,7 @@ Copyright 2015 MrTijn/Tijndagamer
 
 # Import the MPU6050 class from the MPU6050.py file
 from MPU6050 import MPU6050
-from time import sleep
+import time
 
 # Create a new instance of the MPU6050 class
 sensor = MPU6050(0x68)
