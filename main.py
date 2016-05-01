@@ -7,6 +7,7 @@ Copyright 2015 MrTijn/Tijndagamer
 # Import the MPU6050 class from the MPU6050.py file
 from MPU6050 import MPU6050
 import time
+import RPi.GPIO as GPIO
 
 # Create a new instance of the MPU6050 class
 sensor = MPU6050(0x68)
@@ -15,6 +16,14 @@ sensor.set_accel_range(sensor.ACCEL_RANGE_16G)
 
 f = open('data.csv', 'w')
 cur_time = time.time()
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(18,GPIO.OUT)
+print "LED on"
+GPIO.output(18,GPIO.HIGH)
+print "LED off"
+GPIO.output(18,GPIO.LOW)
 
 while True:
     accel_data = sensor.get_accel_data()
