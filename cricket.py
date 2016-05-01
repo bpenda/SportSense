@@ -530,60 +530,16 @@ class MPU6050 :
         self.gz_offset = gz
 
     def scaleSensors(self, ax, ay, az, gx, gy, gz):
-        qax = (ax - self.ax_offset) * self.__SCALE_ACCEL
-        qay = (ay - self.ay_offset) * self.__SCALE_ACCEL
-        qaz = (az - self.az_offset) * self.__SCALE_ACCEL
+        qax = ax * self.__SCALE_ACCEL
+        qay = ay * self.__SCALE_ACCEL
+        qaz = az * self.__SCALE_ACCEL
 
-        qrx = (gx - self.gx_offset) * self.__SCALE_GYRO
-        qry = (gy - self.gy_offset) * self.__SCALE_GYRO
-        qrz = (gz - self.gz_offset) * self.__SCALE_GYRO
+        qrx = gx * self.__SCALE_GYRO
+        qry = gy * self.__SCALE_GYRO
+        qrz = gz * self.__SCALE_GYRO
 
         return qax, qay, qaz, qrx, qry, qrz
 
-    def calibrate0g(self):
-        ax_offset = 0
-        ay_offset = 0
-        az_offset = 0
-        offs_rc = True
-
-        #-------------------------------------------------------------------------------------------
-        # Open the ofset file for this run
-        #-------------------------------------------------------------------------------------------
-        try:
-            with open('0goffsets', 'wb') as offs_file:
-                raw_input("Rest me on my props and press enter.")
-                self.flushFIFO()
-                time.sleep(20 / sampling_rate)
-                self.readFIFO()
-                offs_file.write("%f %f %f" % (ax, ay, az))
-
-        except EnvironmentError:
-            offs_rc = False
-        return offs_rc
-
-
-    def load0gCalibration(self):
-        offs_rc = True
-        try:
-            with open('0goffsets', 'rb') as offs_file:
-                for line in offs_file:
-                    ax_offset, ay_offset, az_offset = line.split()
-            self.ax_offset = float(ax_offset)
-            self.ay_offset = float(ay_offset)
-            self.az_offset = 0.0 # float(az_offset)
-        except EnvironmentError:
-            offs_rc = False
-
-        #AB! Override for safety
-        self.ax_offset = 0.0
-        self.ay_offset = 0.0
-        self.az_offset = 0.0
-
-        return offs_rc
-
-    def getMisses(self):
-        self.num_i2c_errs += self.i2c.getMisses()
-        return (self.num_i2c_errs, self.num_0g_hits, self.num_2g_hits)
 
 
 ####################################################################################################
