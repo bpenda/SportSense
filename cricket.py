@@ -28,7 +28,6 @@ import select
 import os
 import logging
 import csv
-from RPIO import PWM
 import RPi.GPIO as GPIO
 import subprocess
 from datetime import datetime
@@ -297,7 +296,6 @@ class MPU6050 :
         self.gy_offset = 0.0
         self.gz_offset = 0.0
 
-        logger.info('Reseting MPU-6050')
 
         #-------------------------------------------------------------------------------------------
         # Reset all registers
@@ -311,7 +309,6 @@ class MPU6050 :
         # to be changed to 7 to obtain the same 1kHz sample rate.
         #-------------------------------------------------------------------------------------------
         sample_rate_divisor = int(math.trunc(adc_frequency / sampling_rate))
-        logger.warning("SRD:, %d", sample_rate_divisor)
         self.i2c.write8(self.__MPU6050_RA_SMPLRT_DIV, sample_rate_divisor - 1)
         time.sleep(0.1)
 
@@ -411,7 +408,6 @@ class MPU6050 :
         # Read ambient temperature
         #-------------------------------------------------------------------------------------------
         temp = self.readTemperature()
-        logger.warning("IMU core temp: %f", temp / 333.86 + 21.0)
 
     def readTemperature(self):
         temp = self.i2c.readS16(self.__MPU6050_RA_TEMP_OUT_H)
@@ -455,9 +451,9 @@ class MPU6050 :
         ax = 0.0
         ay = 0.0
         az = 0.0
-        gx = 0.0
-        gy = 0.0
-        gz = 0.0
+        rx = 0.0
+        ry = 0.0
+        rz = 0.0
 
         fifo_bytes = self.i2c.readU16(self.__MPU6050_RA_FIFO_COUNTH)
         fifo_batches = int(fifo_bytes / 12)  # This rounds down
@@ -475,12 +471,12 @@ class MPU6050 :
 
                 sensor_data.append((hibyte << 8) + lobyte)
 
-            ax, ay, az, rx, ry, rz = mpu6050.scaleSensors(ax,
-                                                          ay,
-                                                          az,
-                                                          rx,
-                                                          ry,
-                                                          rz)
+            ax, ay, az, rx, ry, rz = mpu6050.scaleSensors(sensor_data[0],
+                                                          sensor_data[1],
+                                                          sensor_data[2],
+                                                          sensor_data[3],
+                                                          sensor_data[4],
+                                                          sensor_data[5])
 
 
             cur_time = time.time()
@@ -583,7 +579,6 @@ class MPU6050 :
         self.ay_offset = 0.0
         self.az_offset = 0.0
 
-        logger.warning("0g Offsets:, %f, %f, %f", self.ax_offset, self.ay_offset, self.az_offset)
         return offs_rc
 
     def getMisses(self):
@@ -706,21 +701,10 @@ class Quadcopter:
             # Now get the batch of averaged data from the FIFO.
             #---------------------------------------------------------------------------------------
             try:
-                qax, qay, qaz, qrx, qry, qrz, i_time = mpu6050.readFIFO()
+                mpu6050.readFIFO()
             except IOError, err:
-                logger.critical("ABORT: %s", err)
                 keep_looping = False
                 break
-
-            #---------------------------------------------------------------------------------------
-            # Sort out units and calibration for the incoming data
-            #---------------------------------------------------------------------------------------
-            qax, qay, qaz, qrx, qry, qrz = mpu6050.scaleSensors(qax,
-                                                                qay,
-                                                                qaz,
-                                                                qrx,
-                                                                qry,
-                                                                qrz)
 
             #---------------------------------------------------------------------------------------
             # Track the number of motion loops and sampling loops; any discrepancy between these are the
@@ -778,4 +762,4 @@ class Quadcopter:
         print "FIFO OVERFLOW, ABORT"
         self.keep_looping = False
 
-    Quad = Quadcopter()
+Quad = Quadcopter()
