@@ -374,7 +374,7 @@ class MPU6050 :
         # See SCALE_ACCEL for convertion from raw data to units of meters per second squared
         #-------------------------------------------------------------------------------------------
         # int(math.log(g / 2, 2)) << 3
-        self.i2c.write8(self.__MPU6050_RA_ACCEL_CONFIG, 0x08)                             #AB! +/-4g
+        self.i2c.write8(self.__MPU6050_RA_ACCEL_CONFIG, 0x10)                             #AB! +/-4g
         time.sleep(0.1)
 
         #-------------------------------------------------------------------------------------------
@@ -483,17 +483,17 @@ class MPU6050 :
 
             f.write(str(int(round(cur_time*1000))))
             f.write(",")
-            f.write(str(rx))
+            f.write(str(sensor_data[3]))
             f.write(",")
-            f.write(str(ry))
+            f.write(str(sensor_data[4]))
             f.write(",")
-            f.write(str(rz))
+            f.write(str(sensor_data[5]))
             f.write(",")
-            f.write(str(ax))
+            f.write(str(sensor_data[0]))
             f.write(",")
-            f.write(str(ay))
+            f.write(str(sensor_data[1]))
             f.write(",")
-            f.write(str(az))
+            f.write(str(sensor_data[2]))
             f.write('\n')
 
         return 
