@@ -460,28 +460,25 @@ class MPU6050 :
         valid_batches = fifo_batches
         batch_size = 6   # signed shorts: ax, ay, az, gx, gy, gz
 
+        batches = []
         for ii in range(fifo_batches):
             sensor_data = []
             fifo_batch = self.i2c.readList(self.__MPU6050_RA_FIFO_R_W, 12)
             for jj in range(0, 12, 2):
                 hibyte = fifo_batch[jj]
                 lobyte = fifo_batch[jj + 1]
+                reading = (hibyte << 8) + lobyte
                 if (hibyte > 127):
-                    hibyte -= 256
+                    reading -= 65536
 
-                sensor_data.append((hibyte << 8) + lobyte)
+                sensor_data.append(reading)
 
-            ax, ay, az, rx, ry, rz = mpu6050.scaleSensors(sensor_data[0],
-                                                          sensor_data[1],
-                                                          sensor_data[2],
-                                                          sensor_data[3],
-                                                          sensor_data[4],
-                                                          sensor_data[5])
+            batches.append(sensor_data)
+        #    cur_time = time.time()
 
-
-            cur_time = time.time()
-
-            f.write(str(int(round(cur_time*1000))))
+        #    f.write(str(int(round(cur_time*1000))))
+        for sensor_data in batches:
+            f.write("")
             f.write(",")
             f.write(str(sensor_data[3]))
             f.write(",")
