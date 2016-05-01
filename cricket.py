@@ -554,7 +554,7 @@ class MPU6050 :
                 raw_input("Rest me on my props and press enter.")
                 self.flushFIFO()
                 time.sleep(20 / sampling_rate)
-                ax, ay, az, gx, gy, gz, dt = self.readFIFO()
+                self.readFIFO()
                 offs_file.write("%f %f %f" % (ax, ay, az))
 
         except EnvironmentError:
@@ -657,7 +657,7 @@ class Quadcopter:
 
         mpu6050.flushFIFO()
         time.sleep(20 / sampling_rate)
-        qax, qay, qaz, qrx, qry, qrz, dt = mpu6050.readFIFO()
+        mpu6050.readFIFO()
 
         #-------------------------------------------------------------------------------------------
         # Set up the variaous timing constants and stats
