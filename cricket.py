@@ -595,7 +595,7 @@ class Quadcopter:
         # sampling_rate      - the data sampling rate and thus data ready interrupt rate
         #                      motion processing.
         #===========================================================================================
-        alpf = 0
+        alpf = 1
         glpf = 1
 
         global adc_frequency
