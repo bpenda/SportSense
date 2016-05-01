@@ -36,6 +36,11 @@ import shutil
 import ctypes
 from ctypes.util import find_library
 
+
+f = open('data.csv', 'w')
+cur_time = time.time()
+
+
 ####################################################################################################
 #
 #  Adafruit i2c interface enhanced with performance / error handling enhancements
@@ -470,38 +475,32 @@ class MPU6050 :
 
                 sensor_data.append((hibyte << 8) + lobyte)
 
-            if sensor_data[2] > 65536 / 8 * 2:                                            #AB! +/-4g
-                self.num_2g_hits += 1
+            ax, ay, az, rx, ry, rz = mpu6050.scaleSensors(ax,
+                                                          ay,
+                                                          az,
+                                                          rx,
+                                                          ry,
+                                                          rz)
 
-            if sensor_data[2] < 65536 / 8 * 0.1:                                          #AB! +/-4g
-                self.num_0g_hits += 1
-#               valid_batches -= 1
-#                logger.critical("!! %x %x %x %x %x %x", sensor_data[0],
-#                                                        sensor_data[1],
-#                                                        sensor_data[2],
-#                                                        sensor_data[3],
-#                                                        sensor_data[4],
-#                                                        sensor_data[5])
-#               continue
 
-            ax += sensor_data[0]
-            ay += sensor_data[1]
-            az += sensor_data[2]
-            gx += sensor_data[3]
-            gy += sensor_data[4]
-            gz += sensor_data[5]
+            cur_time = time.time()
 
-        if valid_batches == 0:
-            raise IOError("%d FIFO bytes, %d batches of which none valid" % (fifo_bytes, fifo_batches))
+            f.write(str(int(round(cur_time*1000))))
+            f.write(",")
+            f.write(str(rx))
+            f.write(",")
+            f.write(str(ry))
+            f.write(",")
+            f.write(str(rz))
+            f.write(",")
+            f.write(str(ax))
+            f.write(",")
+            f.write(str(ay))
+            f.write(",")
+            f.write(str(az))
+            f.write('\n')
 
-        ax /= valid_batches
-        ay /= valid_batches
-        az /= valid_batches
-        gx /= valid_batches
-        gy /= valid_batches
-        gz /= valid_batches
-
-        return ax, ay, az, gx, gy, gz, fifo_batches / sampling_rate
+        return 
 
     def flushFIFO(self):
         #-------------------------------------------------------------------------------------------
@@ -630,6 +629,7 @@ class Quadcopter:
 
     keep_looping = False
     shoot_video = False
+
 
     #===============================================================================================
     # One-off initialization
@@ -778,3 +778,4 @@ class Quadcopter:
         print "FIFO OVERFLOW, ABORT"
         self.keep_looping = False
 
+    Quad = Quadcopter()
