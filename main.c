@@ -58,7 +58,7 @@ int main(int argc, char * argv[]){
             continue;
 
         char filename[128];
-        sprintf(filename, "%s %s %s.csv", argv[1], str_date, str_time);
+        sprintf(filename, "sportsense data/%s %s %s.csv", argv[1], str_date, str_time);
         f = fopen(filename, "w");
 
         reading = 1;
