@@ -63,6 +63,7 @@ int ms_open() {
 		lastval[i]=10;
 	}
 
+    printf("hw.addr = %x\n",get_hw_addr());
 	// initialize device
 	printf("Initializing MPU...\n");
 	if (mpu_init(NULL) != 0) {

@@ -434,6 +434,7 @@ const struct gyro_reg_s reg =
 	.yg_offs_tc     = 0x01
 #endif
 };
+#ifndef ACC2
 const struct hw_s hw =
 {
 	.addr           = 0x68,
@@ -446,6 +447,25 @@ const struct hw_s hw =
 	,.compass_fsr    = AK89xx_FSR
 #endif
 };
+#endif
+#ifdef ACC2
+const struct hw_s hw =
+{
+	.addr           = 0x69,
+	.max_fifo       = 1024,
+	.num_reg        = 118,
+	.temp_sens      = 340,
+	.temp_offset    = -521,
+	.bank_size      = 256
+#if defined AK89xx_SECONDARY
+	,.compass_fsr    = AK89xx_FSR
+#endif
+};
+#endif
+
+int get_hw_addr(){
+    return hw.addr;
+}
 
 const struct test_s test =
 {

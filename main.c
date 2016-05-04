@@ -27,6 +27,9 @@ void * read_top_accel(void * arg){
 }
 
 int main(int argc, char * argv[]){
+#ifdef ACC2
+    printf("acc2\n");
+#endif
     pthread_t top_accel_thread;
 
     unsigned long reading = 0;

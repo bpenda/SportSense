@@ -116,5 +116,7 @@ uint8_t mpu_reg_dump(void);
 uint8_t mpu_read_reg(uint8_t reg, uint8_t *data);
 uint8_t mpu_run_self_test(int32_t *gyro, int32_t *accel);
 
+int get_hw_addr();
+
 #endif  /* _INV_MPU_H_ */
 
