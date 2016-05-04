@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS= -Wall -g -O2
+CXXFLAGS= -Wall -g -O2 -lpthread
 CXX_OPTS= -Wall -g -O2
 
 INSTALL=install
